@@ -1,0 +1,190 @@
+@import "tailwindcss";
+
+:root {
+  --background: #0a0a0a;
+  --foreground: #f5f5f4;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-jakarta);
+
+  --animate-menu-in: menuIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  @keyframes menuIn {
+    from { opacity: 0; transform: translateY(-8px) scale(0.96); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  --animate-blob: blob 25s infinite ease-in-out;
+  @keyframes blob {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(40px, -60px) scale(1.15); }
+    66% { transform: translate(-30px, 30px) scale(0.9); }
+  }
+}
+
+body {
+  background: #0a0a0a;
+  color: var(--foreground);
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ============ HALOS LUMINEUX ============ */
+.blob-container {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(120px);
+  animation: var(--animate-blob);
+}
+
+.blob-1 {
+  width: 600px;
+  height: 600px;
+  background: #f97316;
+  top: -200px;
+  left: -150px;
+  opacity: 0.35;
+  animation-delay: 0s;
+}
+
+.blob-2 {
+  width: 500px;
+  height: 500px;
+  background: #f59e0b;
+  bottom: -200px;
+  right: -150px;
+  opacity: 0.28;
+  animation-delay: -10s;
+}
+
+.blob-3 {
+  width: 700px;
+  height: 700px;
+  background: #ea580c;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0.15;
+  animation-delay: -20s;
+}
+
+/* ============ GRILLE LUMINEUSE ============ */
+.grid-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(249, 115, 22, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(249, 115, 22, 0.03) 1px, transparent 1px);
+  background-size: 80px 80px;
+  mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
+  -webkit-mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
+}
+
+/* ============ CURSEUR PERSONNALISÉ ============ */
+/* On cache le curseur système sur desktop uniquement */
+@media (hover: hover) and (pointer: fine) {
+  * {
+    cursor: none !important;
+  }
+}
+
+.custom-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #f97316;
+  pointer-events: none;
+  z-index: 9999;
+  mix-blend-mode: difference;
+  transition: transform 0.1s ease-out, width 0.2s, height 0.2s;
+  transform: translate(-50%, -50%);
+}
+
+.custom-cursor-halo {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(249, 115, 22, 0.5);
+  pointer-events: none;
+  z-index: 9998;
+  transform: translate(-50%, -50%);
+  transition: transform 0.15s ease-out, width 0.25s, height 0.25s, opacity 0.25s;
+}
+
+.custom-cursor-halo.hover {
+  width: 60px;
+  height: 60px;
+  background: rgba(249, 115, 22, 0.1);
+}
+
+/* ============ BARRE DE PROGRESSION SCROLL ============ */
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #f97316, #fbbf24);
+  z-index: 10000;
+  transform-origin: left;
+  box-shadow: 0 0 10px rgba(249, 115, 22, 0.6);
+}
+
+/* ============ ANIMATION TYPEWRITER ============ */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.cursor-blink {
+  display: inline-block;
+  width: 4px;
+  height: 1em;
+  background: linear-gradient(180deg, #f97316, #fbbf24);
+  margin-left: 4px;
+  vertical-align: middle;
+  animation: blink 1s infinite;
+  border-radius: 2px;
+}
+
+/* ============ EFFET 3D CARTE ============ */
+.card-3d {
+  transform-style: preserve-3d;
+  transition: transform 0.3s ease-out;
+  will-change: transform;
+}
+
+.card-3d-inner {
+  transform: translateZ(20px);
+  transition: transform 0.3s ease-out;
+}
+
+/* ============ FADE IN ON SCROLL ============ */
+.fade-in-up {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
+.fade-in-up.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
