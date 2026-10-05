@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import Link from 'next/link';
+import { API_URL } from '../../../lib/api';
 
 interface Boutique {
   id: number;
@@ -39,10 +40,10 @@ export default function ModifierArticlePage() {
     }
 
     Promise.all([
-      fetch('http://127.0.0.1:8000/api/catalogue/boutiques/', {
+      fetch(`${API_URL}/api/catalogue/boutiques/`, {
         headers: { Authorization: `Bearer ${token}` },
       }).then((res) => res.json()),
-      fetch(`http://127.0.0.1:8000/api/catalogue/articles/${articleId}/`, {
+      fetch(`${API_URL}/api/catalogue/articles/${articleId}/`, {
         headers: { Authorization: `Bearer ${token}` },
       }).then((res) => res.json()),
     ])
@@ -60,7 +61,6 @@ export default function ModifierArticlePage() {
           boutique: String(articleData.boutique || ''),
         });
 
-        // Si l'article a déjà une image, l'afficher
         if (articleData.image) {
           setPreviewImage(articleData.image);
         }
@@ -97,7 +97,6 @@ export default function ModifierArticlePage() {
     if (!token) return;
 
     try {
-      // Utilisation de FormData pour envoyer le fichier
       const data = new FormData();
       data.append('nom', formData.nom);
       data.append('description', formData.description);
@@ -109,12 +108,10 @@ export default function ModifierArticlePage() {
       }
 
       const res = await fetch(
-        `http://127.0.0.1:8000/api/catalogue/articles/${articleId}/`,
+        `${API_URL}/api/catalogue/articles/${articleId}/`,
         {
           method: 'PATCH',
           headers: {
-            // NE PAS mettre 'Content-Type': 'application/json'
-            // Le navigateur définit automatiquement le bon Content-Type avec boundary
             Authorization: `Bearer ${token}`,
           },
           body: data,
@@ -144,7 +141,7 @@ export default function ModifierArticlePage() {
 
     try {
       const res = await fetch(
-        `http://127.0.0.1:8000/api/catalogue/articles/${articleId}/`,
+        `${API_URL}/api/catalogue/articles/${articleId}/`,
         {
           method: 'DELETE',
           headers: { Authorization: `Bearer ${token}` },
@@ -207,7 +204,6 @@ export default function ModifierArticlePage() {
             )}
 
             <form onSubmit={handleSubmit} className="space-y-4">
-              {/* Upload image */}
               <div>
                 <label className="block text-sm font-medium text-stone-300 mb-1.5">
                   Photo de l'article

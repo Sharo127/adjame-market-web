@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { API_URL } from '../lib/api';
 
 interface Stats {
   par_statut: Record<string, number>;
@@ -25,7 +26,7 @@ export default function VendeurDashboardPage() {
       return;
     }
 
-    fetch('http://127.0.0.1:8000/api/commandes/sous-commandes/stats-vendeur/', {
+    fetch(`${API_URL}/api/commandes/sous-commandes/stats-vendeur/`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((res) => {
@@ -78,7 +79,6 @@ export default function VendeurDashboardPage() {
 
         {stats && (
           <>
-            {/* Statistiques principales */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
               <div className="bg-gradient-to-br from-orange-500/10 to-amber-500/5 rounded-2xl border border-orange-500/20 p-6">
                 <p className="text-xs text-orange-400 font-bold uppercase tracking-widest mb-2">
@@ -121,7 +121,6 @@ export default function VendeurDashboardPage() {
             </div>
 
             <div className="grid md:grid-cols-2 gap-6 mb-8">
-              {/* Statuts des commandes */}
               <div className="bg-gradient-to-b from-white/5 to-white/[0.02] backdrop-blur-sm rounded-2xl border border-white/10 p-6">
                 <h2 className="text-lg font-bold text-white mb-5">
                   Commandes par statut
@@ -146,7 +145,6 @@ export default function VendeurDashboardPage() {
                 </div>
               </div>
 
-              {/* Top articles */}
               <div className="bg-gradient-to-b from-white/5 to-white/[0.02] backdrop-blur-sm rounded-2xl border border-white/10 p-6">
                 <h2 className="text-lg font-bold text-white mb-5">Top 3 des ventes</h2>
                 {stats.top_articles.length === 0 ? (
@@ -181,7 +179,6 @@ export default function VendeurDashboardPage() {
               </div>
             </div>
 
-            {/* Liens rapides */}
             <div className="grid sm:grid-cols-2 gap-4">
               <Link
                 href="/vendeur/commandes"

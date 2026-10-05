@@ -26,7 +26,7 @@ export default function VendeurArticlesPage() {
       return;
     }
 
-    fetch('http://127.0.0.1:8000/api/catalogue/articles/', {
+    fetch(`${API_URL}/api/catalogue/articles/`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((res) => {

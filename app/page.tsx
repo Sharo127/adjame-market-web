@@ -19,7 +19,7 @@ export default function HomePage() {
   const [chargement, setChargement] = useState(true);
 
   useEffect(() => {
-    fetch('http://127.0.0.1:8000/api/catalogue/boutiques/')
+    fetch(`${API_URL}/api/catalogue/boutiques/`)
       .then((res) => res.json())
       .then((data) => {
         console.log('Boutiques reçues:', data);

@@ -42,7 +42,7 @@ export default function VendeurCommandesPage() {
       return;
     }
 
-    fetch('http://127.0.0.1:8000/api/commandes/sous-commandes/', {
+    fetch(`${API_URL}/api/commandes/sous-commandes/`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((res) => {
