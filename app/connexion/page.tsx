@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
 
 export default function ConnexionPage() {
   const [formData, setFormData] = useState({ username: '', password: '' });
@@ -30,7 +31,6 @@ export default function ConnexionPage() {
       localStorage.setItem('access_token', data.access);
       localStorage.setItem('refresh_token', data.refresh);
 
-      // Rechargement complet pour que la Navbar détecte le token
       window.location.href = '/';
     } catch {
       setErreur("Nom d'utilisateur ou mot de passe incorrect.");
@@ -41,20 +41,16 @@ export default function ConnexionPage() {
   return (
     <main className="min-h-screen flex items-center justify-center px-6 pt-28 pb-16">
       <div className="w-full max-w-md">
-        {/* En-tête */}
         <div className="text-center mb-8">
           <span className="inline-flex w-14 h-14 rounded-2xl bg-gradient-to-br from-orange-500 to-amber-600 text-white items-center justify-center font-bold text-xl shadow-2xl shadow-orange-500/40 mb-5">
             A
           </span>
-          <h1 className="text-3xl font-bold tracking-tight text-white">
-            Bon retour
-          </h1>
+          <h1 className="text-3xl font-bold tracking-tight text-white">Bon retour</h1>
           <p className="text-stone-400 text-sm mt-2">
             Connectez-vous à votre compte Adjame Market.
           </p>
         </div>
 
-        {/* Carte du formulaire */}
         <div className="relative bg-gradient-to-b from-white/[0.07] to-white/[0.02] backdrop-blur-xl rounded-3xl border border-white/10 p-8 shadow-2xl shadow-black/50 overflow-hidden">
           <div className="absolute -top-24 -right-24 w-48 h-48 bg-orange-500/10 rounded-full blur-3xl pointer-events-none" />
 
@@ -109,10 +105,7 @@ export default function ConnexionPage() {
 
         <p className="text-sm text-stone-400 mt-6 text-center">
           Pas encore de compte ?{' '}
-          <Link
-            href="/inscription"
-            className="text-orange-400 font-medium hover:text-orange-300 transition-colors"
-          >
+          <Link href="/inscription" className="text-orange-400 font-medium hover:text-orange-300 transition-colors">
             S'inscrire
           </Link>
         </p>

@@ -6,6 +6,7 @@ import TypewriterText from './components/TypewriterText';
 import CountUp from './components/CountUp';
 import BoutiqueCard from './components/BoutiqueCard';
 import HeroCarousel from './components/HeroCarousel';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
 
 interface Boutique {
   id: number;
@@ -34,7 +35,6 @@ export default function HomePage() {
     <main className="min-h-screen">
       {/* ============ HERO ============ */}
       <section className="relative min-h-[95vh] flex items-center justify-center overflow-hidden">
-        {/* Carrousel d'images en arrière-plan */}
         <HeroCarousel />
 
         <div className="relative z-10 max-w-5xl mx-auto px-6 text-center">

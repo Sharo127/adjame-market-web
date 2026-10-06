@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { usePanier } from '../contexts/PanierContext';
-import { API_URL } from '../lib/api';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
 
 export default function Navbar() {
   const router = useRouter();

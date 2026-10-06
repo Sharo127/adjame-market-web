@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
 
 const LABELS_STATUT: Record<string, string> = {
   en_attente: 'En attente',
@@ -70,7 +71,7 @@ export default function VendeurCommandesPage() {
 
     try {
       const res = await fetch(
-        `http://127.0.0.1:8000/api/commandes/sous-commandes/${id}/${action}/`,
+        `${API_URL}/api/commandes/sous-commandes/${id}/${action}/`,
         {
           method: 'PATCH',
           headers: {
@@ -93,7 +94,6 @@ export default function VendeurCommandesPage() {
     }
   };
 
-  // Boutons à afficher selon le statut
   const renderActions = (sc: any) => {
     const boutons = [];
 
@@ -195,7 +195,6 @@ export default function VendeurCommandesPage() {
                 key={sc.id}
                 className="bg-gradient-to-b from-white/5 to-white/[0.02] backdrop-blur-sm rounded-2xl border border-white/10 p-6 hover:border-orange-500/20 transition-all duration-300"
               >
-                {/* En-tête */}
                 <div className="flex justify-between items-start mb-4">
                   <div>
                     <h2 className="font-semibold text-white text-lg">
@@ -219,7 +218,6 @@ export default function VendeurCommandesPage() {
                   </div>
                 </div>
 
-                {/* Lignes d'articles */}
                 <div className="space-y-2 mb-4">
                   {sc.lignes?.map((ligne: any) => (
                     <div
@@ -241,7 +239,6 @@ export default function VendeurCommandesPage() {
                   ))}
                 </div>
 
-                {/* Boutons d'action */}
                 {renderActions(sc).length > 0 && (
                   <div className="flex justify-end gap-2 pt-4 border-t border-white/5">
                     {renderActions(sc)}

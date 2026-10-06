@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
 
 interface Article {
   id: number;
@@ -66,7 +67,6 @@ export default function VendeurArticlesPage() {
   return (
     <main className="min-h-screen pt-28 pb-20 px-6">
       <div className="max-w-5xl mx-auto">
-        {/* En-tête */}
         <div className="flex flex-wrap justify-between items-end gap-4 mb-8">
           <div>
             <span className="text-xs font-bold tracking-widest text-orange-400 uppercase">
