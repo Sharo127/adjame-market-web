@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { usePanier, ArticlePanier } from '../contexts/PanierContext';
+import { track } from '@vercel/analytics';
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
 
 export default function PanierPage() {
@@ -35,6 +36,17 @@ export default function PanierPage() {
       setErreur("Merci d'indiquer une adresse de livraison.");
       return;
     }
+
+    const ajouterArticle = (article: ArticlePanier) => {
+  // ... votre logique existante ...
+  
+  // Ajoutez cette ligne pour tracker l'événement
+  track('Ajout au panier', {
+    article: article.nom,
+    prix: article.prix,
+    boutique: article.boutiqueNom,
+  });
+};
 
     setErreur('');
     setChargement(true);

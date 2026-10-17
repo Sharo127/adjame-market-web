@@ -29,10 +29,8 @@ body {
   color: var(--foreground);
   font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
   min-height: 100vh;
-  overflow-x: hidden;
 }
 
-/* ============ HALOS LUMINEUX ============ */
 .blob-container {
   position: fixed;
   inset: 0;
@@ -79,7 +77,6 @@ body {
   animation-delay: -20s;
 }
 
-/* ============ GRILLE LUMINEUSE ============ */
 .grid-overlay {
   position: fixed;
   inset: 0;
@@ -91,100 +88,4 @@ body {
   background-size: 80px 80px;
   mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
   -webkit-mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
-}
-
-/* ============ CURSEUR PERSONNALISÉ ============ */
-/* On cache le curseur système sur desktop uniquement */
-@media (hover: hover) and (pointer: fine) {
-  * {
-    cursor: none !important;
-  }
-}
-
-.custom-cursor {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background: #f97316;
-  pointer-events: none;
-  z-index: 9999;
-  mix-blend-mode: difference;
-  transition: transform 0.1s ease-out, width 0.2s, height 0.2s;
-  transform: translate(-50%, -50%);
-}
-
-.custom-cursor-halo {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  border: 1.5px solid rgba(249, 115, 22, 0.5);
-  pointer-events: none;
-  z-index: 9998;
-  transform: translate(-50%, -50%);
-  transition: transform 0.15s ease-out, width 0.25s, height 0.25s, opacity 0.25s;
-}
-
-.custom-cursor-halo.hover {
-  width: 60px;
-  height: 60px;
-  background: rgba(249, 115, 22, 0.1);
-}
-
-/* ============ BARRE DE PROGRESSION SCROLL ============ */
-.scroll-progress {
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 3px;
-  background: linear-gradient(90deg, #f97316, #fbbf24);
-  z-index: 10000;
-  transform-origin: left;
-  box-shadow: 0 0 10px rgba(249, 115, 22, 0.6);
-}
-
-/* ============ ANIMATION TYPEWRITER ============ */
-@keyframes blink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0; }
-}
-
-.cursor-blink {
-  display: inline-block;
-  width: 4px;
-  height: 1em;
-  background: linear-gradient(180deg, #f97316, #fbbf24);
-  margin-left: 4px;
-  vertical-align: middle;
-  animation: blink 1s infinite;
-  border-radius: 2px;
-}
-
-/* ============ EFFET 3D CARTE ============ */
-.card-3d {
-  transform-style: preserve-3d;
-  transition: transform 0.3s ease-out;
-  will-change: transform;
-}
-
-.card-3d-inner {
-  transform: translateZ(20px);
-  transition: transform 0.3s ease-out;
-}
-
-/* ============ FADE IN ON SCROLL ============ */
-.fade-in-up {
-  opacity: 0;
-  transform: translateY(30px);
-  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
-}
-
-.fade-in-up.visible {
-  opacity: 1;
-  transform: translateY(0);
 }

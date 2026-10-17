@@ -5,6 +5,7 @@ import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import AnimatedBackground from "./components/AnimatedBackground";
 import { PanierProvider } from "./contexts/PanierContext";
+import { Analytics } from "@vercel/analytics/next";
 
 const jakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -42,6 +43,7 @@ export default function RootLayout({
           {children}
           <Footer />
         </PanierProvider>
+        <Analytics />
       </body>
     </html>
   );
