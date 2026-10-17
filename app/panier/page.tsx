@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { usePanier, ArticlePanier } from '../contexts/PanierContext';
-import { track } from '@vercel/analytics';
+
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
 
 export default function PanierPage() {
@@ -13,6 +13,7 @@ export default function PanierPage() {
   const [chargement, setChargement] = useState(false);
   const [erreur, setErreur] = useState('');
   const [adresse, setAdresse] = useState('');
+  const [modePaiement, setModePaiement] = useState<'livraison' | 'mobile'>('livraison');
 
   const total = articles.reduce((sum, a) => sum + a.prix * a.quantite, 0);
 
@@ -37,21 +38,11 @@ export default function PanierPage() {
       return;
     }
 
-    const ajouterArticle = (article: ArticlePanier) => {
-  // ... votre logique existante ...
-  
-  // Ajoutez cette ligne pour tracker l'événement
-  track('Ajout au panier', {
-    article: article.nom,
-    prix: article.prix,
-    boutique: article.boutiqueNom,
-  });
-};
-
     setErreur('');
     setChargement(true);
 
     try {
+      // Étape 1 : Créer la commande
       const resCommande = await fetch(`${API_URL}/api/commandes/commandes/`, {
         method: 'POST',
         headers: {
@@ -68,6 +59,8 @@ export default function PanierPage() {
 
       const commande = await resCommande.json();
 
+      // Étape 2 : Créer les sous-commandes et lignes
+      const sousCommandesIds: number[] = [];
       for (const boutiqueId of Object.keys(parBoutique)) {
         const resSousCommande = await fetch(`${API_URL}/api/commandes/sous-commandes/`, {
           method: 'POST',
@@ -87,6 +80,7 @@ export default function PanierPage() {
         }
 
         const sousCommande = await resSousCommande.json();
+        sousCommandesIds.push(sousCommande.id);
 
         for (const article of parBoutique[Number(boutiqueId)]) {
           const resLigne = await fetch(`${API_URL}/api/commandes/lignes/`, {
@@ -110,10 +104,40 @@ export default function PanierPage() {
         }
       }
 
+      // Étape 3 : Si mode paiement mobile, créer la facture PayDunya
+      if (modePaiement === 'mobile' && sousCommandesIds.length > 0) {
+        const resPaiement = await fetch(`${API_URL}/api/commandes/paiement/creer/`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ sous_commande_id: sousCommandesIds[0] }),
+        });
+
+        if (!resPaiement.ok) {
+          const errorData = await resPaiement.json().catch(() => ({}));
+          throw new Error(errorData.erreur || 'Erreur lors de la création du paiement');
+        }
+
+        const paiement = await resPaiement.json();
+
+        if (paiement.success && paiement.url) {
+          // Vider le panier avant redirection
+          viderPanier();
+          // Rediriger vers PayDunya
+          window.location.href = paiement.url;
+          return;
+        } else {
+          throw new Error('URL de paiement invalide');
+        }
+      }
+
+      // Mode livraison classique : rediriger vers confirmation
       viderPanier();
       window.location.href = '/commande-confirmee';
     } catch (err: any) {
-      setErreur(err.message || 'Une erreur est survenue lors de la commande.');
+      setErreur(err.message || 'Une erreur est survenue.');
       setChargement(false);
     }
   };
@@ -125,7 +149,9 @@ export default function PanierPage() {
           <div className="text-7xl mb-6 opacity-80">🛒</div>
           <h1 className="text-3xl font-bold text-white mb-3">Votre panier est vide</h1>
           <p className="text-stone-400 mb-8">Parcourez nos articles pour commencer vos achats au marché d'Adjamé.</p>
-          <Link href="/articles" className="inline-block px-8 py-3.5 rounded-full bg-gradient-to-r from-orange-500 to-amber-600 text-white font-semibold shadow-2xl shadow-orange-500/40 hover:shadow-orange-500/60 hover:scale-105 transition-all duration-300">Voir les articles</Link>
+          <Link href="/articles" className="inline-block px-8 py-3.5 rounded-full bg-gradient-to-r from-orange-500 to-amber-600 text-white font-semibold shadow-2xl shadow-orange-500/40 hover:shadow-orange-500/60 hover:scale-105 transition-all duration-300">
+            Voir les articles
+          </Link>
         </div>
       </main>
     );
@@ -141,6 +167,7 @@ export default function PanierPage() {
           <div className="bg-red-500/10 border border-red-500/20 text-red-400 text-sm p-3 rounded-xl mb-4">{erreur}</div>
         )}
 
+        {/* Liste des articles */}
         <div className="space-y-3 mb-6">
           {articles.map((article) => (
             <div key={article.id} className="bg-gradient-to-b from-white/5 to-white/[0.02] backdrop-blur-sm rounded-2xl border border-white/10 p-5 flex justify-between items-center hover:border-orange-500/30 transition-all duration-300">
@@ -153,20 +180,80 @@ export default function PanierPage() {
           ))}
         </div>
 
+        {/* Adresse */}
         <div className="mb-6">
           <label className="block text-sm font-medium text-stone-300 mb-2">Adresse de livraison</label>
-          <input type="text" value={adresse} onChange={(e) => setAdresse(e.target.value)} placeholder="Ex: Cocody Angré, 7ème tranche, près de la pharmacie" className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-stone-500 focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500/50 transition" />
+          <input
+            type="text"
+            value={adresse}
+            onChange={(e) => setAdresse(e.target.value)}
+            placeholder="Ex: Cocody Angré, 7ème tranche"
+            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-stone-500 focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500/50 transition"
+          />
         </div>
 
+        {/* Choix du mode de paiement */}
+        <div className="mb-6">
+          <label className="block text-sm font-medium text-stone-300 mb-3">Mode de paiement</label>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <button
+              type="button"
+              onClick={() => setModePaiement('livraison')}
+              className={`flex items-center gap-3 p-4 rounded-xl border transition-all duration-300 ${
+                modePaiement === 'livraison'
+                  ? 'bg-orange-500/10 border-orange-500/50'
+                  : 'bg-white/5 border-white/10 hover:bg-white/10'
+              }`}
+            >
+              <span className="text-2xl">🚚</span>
+              <div className="text-left">
+                <p className="text-sm font-semibold text-white">À la livraison</p>
+                <p className="text-xs text-stone-400">Payer en espèces</p>
+              </div>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setModePaiement('mobile')}
+              className={`flex items-center gap-3 p-4 rounded-xl border transition-all duration-300 ${
+                modePaiement === 'mobile'
+                  ? 'bg-orange-500/10 border-orange-500/50'
+                  : 'bg-white/5 border-white/10 hover:bg-white/10'
+              }`}
+            >
+              <span className="text-2xl">📱</span>
+              <div className="text-left">
+                <p className="text-sm font-semibold text-white">Mobile Money</p>
+                <p className="text-xs text-stone-400">Orange, MTN, Moov, Wave</p>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        {/* Total */}
         <div className="relative overflow-hidden bg-gradient-to-br from-orange-500/10 via-amber-500/5 to-transparent rounded-2xl border border-orange-500/20 p-6 flex justify-between items-center mb-6">
           <div className="absolute -top-12 -right-12 w-32 h-32 bg-orange-500/20 rounded-full blur-3xl" />
           <span className="relative font-medium text-stone-300 uppercase tracking-widest text-sm">Total</span>
           <span className="relative text-3xl font-bold bg-gradient-to-r from-orange-400 to-amber-500 bg-clip-text text-transparent">{total.toLocaleString('fr-FR')} FCFA</span>
         </div>
 
-        <button onClick={handleCommander} disabled={chargement} className="w-full bg-gradient-to-r from-orange-500 to-amber-600 text-white font-semibold py-4 rounded-full hover:shadow-2xl hover:shadow-orange-500/50 hover:scale-[1.02] transition-all duration-300 disabled:opacity-50">
-          {chargement ? 'Validation en cours...' : 'Valider la commande'}
+        <button
+          onClick={handleCommander}
+          disabled={chargement}
+          className="w-full bg-gradient-to-r from-orange-500 to-amber-600 text-white font-semibold py-4 rounded-full hover:shadow-2xl hover:shadow-orange-500/50 hover:scale-[1.02] transition-all duration-300 disabled:opacity-50"
+        >
+          {chargement
+            ? 'Traitement...'
+            : modePaiement === 'mobile'
+            ? 'Payer avec Mobile Money'
+            : 'Valider la commande'}
         </button>
+
+        {modePaiement === 'mobile' && (
+          <p className="text-xs text-center text-stone-500 mt-3">
+            Vous serez redirigé vers PayDunya pour finaliser le paiement
+          </p>
+        )}
       </div>
     </main>
   );
