@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
 
 const LABELS_STATUT: Record<string, string> = {
@@ -93,10 +94,10 @@ export default function LivreurCommandesPage() {
     return (
       <main className="min-h-screen pt-28 pb-20 px-6">
         <div className="max-w-4xl mx-auto">
-          <div className="h-10 w-64 bg-white/5 rounded animate-pulse mb-8"></div>
-          <div className="space-y-4">
+          <div className="h-10 w-64 bg-white/5 rounded-2xl animate-pulse mb-10" />
+          <div className="space-y-6">
             {[1, 2].map((i) => (
-              <div key={i} className="bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 p-6 h-32 animate-pulse" />
+              <div key={i} className="bg-white/5 rounded-3xl border border-white/10 p-8 h-40 animate-pulse" />
             ))}
           </div>
         </div>
@@ -107,34 +108,43 @@ export default function LivreurCommandesPage() {
   return (
     <main className="min-h-screen pt-28 pb-20 px-6">
       <div className="max-w-4xl mx-auto">
-        <div className="mb-8">
+        <div className="mb-10">
           <span className="text-xs font-bold tracking-widest text-orange-400 uppercase">Espace livreur</span>
-          <h1 className="text-4xl font-bold tracking-tight text-white mt-2 mb-2">Mes livraisons</h1>
+          <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-white mt-2 mb-2">Mes livraisons</h1>
           <p className="text-stone-400">Gérez vos courses et livrez les commandes du marché d'Adjamé.</p>
         </div>
 
-        <div className="flex gap-2 mb-6 p-1.5 bg-white/5 rounded-full border border-white/10 w-fit">
+        {/* Onglets */}
+        <div className="flex gap-2 mb-8 p-1.5 bg-white/5 rounded-2xl border border-white/10 w-fit">
           <button
             onClick={() => setFiltre('disponibles')}
-            className={`px-5 py-2 rounded-full text-sm font-medium transition-all duration-300 ${filtre === 'disponibles' ? 'bg-gradient-to-r from-orange-500 to-amber-600 text-white shadow-lg shadow-orange-500/40' : 'text-stone-400 hover:text-white'}`}
+            className={`px-6 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 ${
+              filtre === 'disponibles'
+                ? 'bg-gradient-to-r from-orange-500 to-amber-600 text-white shadow-lg shadow-orange-500/40'
+                : 'text-stone-400 hover:text-white'
+            }`}
           >
             Disponibles ({commandes.filter((sc) => sc.statut === 'prete').length})
           </button>
           <button
             onClick={() => setFiltre('en_cours')}
-            className={`px-5 py-2 rounded-full text-sm font-medium transition-all duration-300 ${filtre === 'en_cours' ? 'bg-gradient-to-r from-orange-500 to-amber-600 text-white shadow-lg shadow-orange-500/40' : 'text-stone-400 hover:text-white'}`}
+            className={`px-6 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 ${
+              filtre === 'en_cours'
+                ? 'bg-gradient-to-r from-orange-500 to-amber-600 text-white shadow-lg shadow-orange-500/40'
+                : 'text-stone-400 hover:text-white'
+            }`}
           >
             Mes courses ({commandes.filter((sc) => ['en_livraison', 'livree'].includes(sc.statut)).length})
           </button>
         </div>
 
         {erreur && (
-          <div className="bg-red-500/10 border border-red-500/20 text-red-400 text-sm p-3 rounded-xl mb-4">{erreur}</div>
+          <div className="bg-red-500/10 border border-red-500/20 text-red-400 text-sm p-4 rounded-2xl mb-6">{erreur}</div>
         )}
 
         {commandesFiltrees.length === 0 ? (
-          <div className="text-center py-20 bg-gradient-to-b from-white/5 to-white/[0.02] backdrop-blur-sm rounded-3xl border border-white/10">
-            <div className="text-7xl mb-4 opacity-80">🚚</div>
+          <div className="text-center py-20 bg-white/5 backdrop-blur-sm rounded-3xl border border-white/10">
+            <div className="text-7xl mb-6 opacity-80">🚚</div>
             <p className="text-stone-400 mb-2">
               {filtre === 'disponibles' ? 'Aucune commande prête à livrer pour le moment.' : "Vous n'avez pas de course en cours."}
             </p>
@@ -143,37 +153,40 @@ export default function LivreurCommandesPage() {
             </p>
           </div>
         ) : (
-          <div className="space-y-4">
+          <div className="space-y-6">
             {commandesFiltrees.map((sc) => (
-              <div key={sc.id} className="bg-gradient-to-b from-white/5 to-white/[0.02] backdrop-blur-sm rounded-2xl border border-white/10 p-6 hover:border-orange-500/20 transition-all duration-300">
-                <div className="flex justify-between items-start mb-4">
+              <div key={sc.id} className="bg-white/5 backdrop-blur-sm rounded-3xl border border-white/10 p-8 hover:border-orange-500/30 transition-all duration-500">
+                {/* En-tête */}
+                <div className="flex flex-wrap justify-between items-start gap-4 mb-6">
                   <div>
-                    <h2 className="font-semibold text-white text-lg">Commande #{sc.commande}</h2>
-                    <p className="text-sm text-stone-400 mt-0.5">{sc.boutique_nom || `Boutique #${sc.boutique}`}</p>
+                    <h2 className="font-bold text-white text-2xl">Commande #{sc.commande}</h2>
+                    <p className="text-sm text-stone-400 mt-1">{sc.boutique_nom || `Boutique #${sc.boutique}`}</p>
                   </div>
-                  <span className={`text-xs font-semibold px-2.5 py-1 rounded-full border ${COULEURS_STATUT[sc.statut] || 'bg-white/5 text-stone-400 border-white/10'}`}>
+                  <span className={`text-xs font-bold px-3 py-1.5 rounded-full border ${COULEURS_STATUT[sc.statut] || 'bg-white/5 text-stone-400 border-white/10'}`}>
                     {LABELS_STATUT[sc.statut] || sc.statut}
                   </span>
                 </div>
 
+                {/* Adresse */}
                 {sc.adresse_livraison && (
-                  <div className="flex items-start gap-2 mb-4 p-3 bg-white/[0.03] rounded-xl border border-white/5">
-                    <svg className="w-4 h-4 text-orange-400 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <div className="flex items-start gap-3 mb-6 p-4 bg-white/[0.02] rounded-2xl border border-white/5">
+                    <svg className="w-5 h-5 text-orange-400 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                     </svg>
                     <div>
                       <p className="text-xs text-stone-500 uppercase tracking-wider">Adresse de livraison</p>
-                      <p className="text-sm text-stone-200 mt-0.5">{sc.adresse_livraison}</p>
+                      <p className="text-sm font-medium text-stone-200 mt-1">{sc.adresse_livraison}</p>
                     </div>
                   </div>
                 )}
 
-                <div className="space-y-2 mb-4">
+                {/* Lignes */}
+                <div className="space-y-3 mb-6">
                   {sc.lignes?.map((ligne: any) => (
-                    <div key={ligne.id} className="flex justify-between items-center bg-white/[0.03] rounded-lg px-3 py-2 border border-white/5">
+                    <div key={ligne.id} className="flex justify-between items-center bg-white/[0.02] rounded-xl px-4 py-3 border border-white/5">
                       <div>
-                        <p className="text-sm text-stone-200">{ligne.article_nom || `Article #${ligne.article}`}</p>
+                        <p className="text-sm font-medium text-stone-200">{ligne.article_nom || `Article #${ligne.article}`}</p>
                         <p className="text-xs text-stone-500">Quantité: {ligne.quantite}</p>
                       </div>
                       <span className="text-sm font-semibold text-orange-400">{Number(ligne.sous_total).toLocaleString('fr-FR')} FCFA</span>
@@ -181,19 +194,20 @@ export default function LivreurCommandesPage() {
                   ))}
                 </div>
 
-                <div className="flex justify-end pt-4 border-t border-white/5">
+                {/* Actions */}
+                <div className="flex justify-end pt-6 border-t border-white/5">
                   {sc.statut === 'prete' && (
-                    <button onClick={() => transition(sc.id, 'commencer-livraison')} disabled={actionEnCours === sc.id} className="text-sm font-semibold px-5 py-2.5 rounded-full bg-gradient-to-r from-orange-500 to-amber-600 text-white hover:shadow-lg hover:shadow-orange-500/50 hover:scale-105 transition-all duration-300 disabled:opacity-50">
+                    <button onClick={() => transition(sc.id, 'commencer-livraison')} disabled={actionEnCours === sc.id} className="text-sm font-semibold px-6 py-3 rounded-xl bg-gradient-to-r from-orange-500 to-amber-600 text-white hover:shadow-lg hover:shadow-orange-500/50 hover:scale-105 transition-all duration-300 disabled:opacity-50">
                       {actionEnCours === sc.id ? '...' : '🚚 Accepter la course'}
                     </button>
                   )}
                   {sc.statut === 'en_livraison' && (
-                    <button onClick={() => transition(sc.id, 'marquer-livree')} disabled={actionEnCours === sc.id} className="text-sm font-semibold px-5 py-2.5 rounded-full bg-gradient-to-r from-green-500 to-emerald-600 text-white hover:shadow-lg hover:shadow-green-500/50 hover:scale-105 transition-all duration-300 disabled:opacity-50">
+                    <button onClick={() => transition(sc.id, 'marquer-livree')} disabled={actionEnCours === sc.id} className="text-sm font-semibold px-6 py-3 rounded-xl bg-gradient-to-r from-green-500 to-emerald-600 text-white hover:shadow-lg hover:shadow-green-500/50 hover:scale-105 transition-all duration-300 disabled:opacity-50">
                       {actionEnCours === sc.id ? '...' : '✓ Marquer comme livrée'}
                     </button>
                   )}
                   {sc.statut === 'livree' && (
-                    <span className="text-xs font-semibold text-green-400 bg-green-500/10 px-3 py-1.5 rounded-full border border-green-500/20">✓ Livrée avec succès</span>
+                    <span className="text-sm font-semibold text-green-400 bg-green-500/10 px-4 py-2 rounded-xl border border-green-500/20">✓ Livrée avec succès</span>
                   )}
                 </div>
               </div>

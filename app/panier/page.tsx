@@ -42,7 +42,6 @@ export default function PanierPage() {
     setChargement(true);
 
     try {
-      // Étape 1 : Créer la commande
       const resCommande = await fetch(`${API_URL}/api/commandes/commandes/`, {
         method: 'POST',
         headers: {
@@ -58,9 +57,8 @@ export default function PanierPage() {
       }
 
       const commande = await resCommande.json();
-
-      // Étape 2 : Créer les sous-commandes et lignes
       const sousCommandesIds: number[] = [];
+
       for (const boutiqueId of Object.keys(parBoutique)) {
         const resSousCommande = await fetch(`${API_URL}/api/commandes/sous-commandes/`, {
           method: 'POST',
@@ -104,7 +102,6 @@ export default function PanierPage() {
         }
       }
 
-      // Étape 3 : Si mode paiement mobile, créer la facture PayDunya
       if (modePaiement === 'mobile' && sousCommandesIds.length > 0) {
         const resPaiement = await fetch(`${API_URL}/api/commandes/paiement/creer/`, {
           method: 'POST',
@@ -123,9 +120,7 @@ export default function PanierPage() {
         const paiement = await resPaiement.json();
 
         if (paiement.success && paiement.url) {
-          // Vider le panier avant redirection
           viderPanier();
-          // Rediriger vers PayDunya
           window.location.href = paiement.url;
           return;
         } else {
@@ -133,7 +128,6 @@ export default function PanierPage() {
         }
       }
 
-      // Mode livraison classique : rediriger vers confirmation
       viderPanier();
       window.location.href = '/commande-confirmee';
     } catch (err: any) {
@@ -149,7 +143,7 @@ export default function PanierPage() {
           <div className="text-7xl mb-6 opacity-80">🛒</div>
           <h1 className="text-3xl font-bold text-white mb-3">Votre panier est vide</h1>
           <p className="text-stone-400 mb-8">Parcourez nos articles pour commencer vos achats au marché d'Adjamé.</p>
-          <Link href="/articles" className="inline-block px-8 py-3.5 rounded-full bg-gradient-to-r from-orange-500 to-amber-600 text-white font-semibold shadow-2xl shadow-orange-500/40 hover:shadow-orange-500/60 hover:scale-105 transition-all duration-300">
+          <Link href="/articles" className="inline-block px-8 py-4 rounded-2xl bg-gradient-to-r from-orange-500 to-amber-600 text-white font-semibold shadow-2xl shadow-orange-500/40 hover:shadow-orange-500/60 hover:scale-105 transition-all duration-300">
             Voir les articles
           </Link>
         </div>
@@ -161,53 +155,55 @@ export default function PanierPage() {
     <main className="min-h-screen pt-28 pb-20 px-6">
       <div className="max-w-2xl mx-auto">
         <span className="text-xs font-bold tracking-widest text-orange-400 uppercase">Mon panier</span>
-        <h1 className="text-4xl font-bold tracking-tight text-white mt-2 mb-8">Récapitulatif</h1>
+        <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-white mt-2 mb-10">Récapitulatif</h1>
 
         {erreur && (
-          <div className="bg-red-500/10 border border-red-500/20 text-red-400 text-sm p-3 rounded-xl mb-4">{erreur}</div>
+          <div className="bg-red-500/10 border border-red-500/20 text-red-400 text-sm p-4 rounded-2xl mb-6">{erreur}</div>
         )}
 
         {/* Liste des articles */}
-        <div className="space-y-3 mb-6">
+        <div className="space-y-4 mb-8">
           {articles.map((article) => (
-            <div key={article.id} className="bg-gradient-to-b from-white/5 to-white/[0.02] backdrop-blur-sm rounded-2xl border border-white/10 p-5 flex justify-between items-center hover:border-orange-500/30 transition-all duration-300">
+            <div key={article.id} className="bg-white/5 backdrop-blur-sm rounded-3xl border border-white/10 p-5 flex justify-between items-center hover:border-orange-500/30 transition-all duration-300">
               <div>
-                <h3 className="font-medium text-white">{article.nom}</h3>
+                <h3 className="font-semibold text-white text-lg">{article.nom}</h3>
                 <p className="text-sm text-stone-400 mt-1">{article.quantite} × {article.prix.toLocaleString('fr-FR')} FCFA</p>
               </div>
-              <button onClick={() => retirerArticle(article.id)} className="text-sm text-stone-400 hover:text-red-400 font-medium transition-colors">Retirer</button>
+              <button onClick={() => retirerArticle(article.id)} className="text-sm text-stone-400 hover:text-red-400 font-medium transition-colors">
+                Retirer
+              </button>
             </div>
           ))}
         </div>
 
         {/* Adresse */}
-        <div className="mb-6">
-          <label className="block text-sm font-medium text-stone-300 mb-2">Adresse de livraison</label>
+        <div className="mb-8">
+          <label className="block text-sm font-semibold text-stone-300 mb-3">Adresse de livraison</label>
           <input
             type="text"
             value={adresse}
             onChange={(e) => setAdresse(e.target.value)}
             placeholder="Ex: Cocody Angré, 7ème tranche"
-            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-stone-500 focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500/50 transition"
+            className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 text-sm text-white placeholder-stone-500 focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500/50 transition"
           />
         </div>
 
-        {/* Choix du mode de paiement */}
-        <div className="mb-6">
-          <label className="block text-sm font-medium text-stone-300 mb-3">Mode de paiement</label>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        {/* Mode de paiement */}
+        <div className="mb-8">
+          <label className="block text-sm font-semibold text-stone-300 mb-3">Mode de paiement</label>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <button
               type="button"
               onClick={() => setModePaiement('livraison')}
-              className={`flex items-center gap-3 p-4 rounded-xl border transition-all duration-300 ${
+              className={`flex items-center gap-4 p-5 rounded-3xl border transition-all duration-300 ${
                 modePaiement === 'livraison'
-                  ? 'bg-orange-500/10 border-orange-500/50'
+                  ? 'bg-orange-500/10 border-orange-500/50 shadow-lg shadow-orange-500/10'
                   : 'bg-white/5 border-white/10 hover:bg-white/10'
               }`}
             >
-              <span className="text-2xl">🚚</span>
+              <span className="text-3xl">🚚</span>
               <div className="text-left">
-                <p className="text-sm font-semibold text-white">À la livraison</p>
+                <p className="text-base font-bold text-white">À la livraison</p>
                 <p className="text-xs text-stone-400">Payer en espèces</p>
               </div>
             </button>
@@ -215,15 +211,15 @@ export default function PanierPage() {
             <button
               type="button"
               onClick={() => setModePaiement('mobile')}
-              className={`flex items-center gap-3 p-4 rounded-xl border transition-all duration-300 ${
+              className={`flex items-center gap-4 p-5 rounded-3xl border transition-all duration-300 ${
                 modePaiement === 'mobile'
-                  ? 'bg-orange-500/10 border-orange-500/50'
+                  ? 'bg-orange-500/10 border-orange-500/50 shadow-lg shadow-orange-500/10'
                   : 'bg-white/5 border-white/10 hover:bg-white/10'
               }`}
             >
-              <span className="text-2xl">📱</span>
+              <span className="text-3xl">📱</span>
               <div className="text-left">
-                <p className="text-sm font-semibold text-white">Mobile Money</p>
+                <p className="text-base font-bold text-white">Mobile Money</p>
                 <p className="text-xs text-stone-400">Orange, MTN, Moov, Wave</p>
               </div>
             </button>
@@ -231,16 +227,16 @@ export default function PanierPage() {
         </div>
 
         {/* Total */}
-        <div className="relative overflow-hidden bg-gradient-to-br from-orange-500/10 via-amber-500/5 to-transparent rounded-2xl border border-orange-500/20 p-6 flex justify-between items-center mb-6">
+        <div className="relative overflow-hidden bg-gradient-to-br from-orange-500/10 via-amber-500/5 to-transparent rounded-3xl border border-orange-500/20 p-6 flex justify-between items-center mb-8">
           <div className="absolute -top-12 -right-12 w-32 h-32 bg-orange-500/20 rounded-full blur-3xl" />
-          <span className="relative font-medium text-stone-300 uppercase tracking-widest text-sm">Total</span>
+          <span className="relative font-semibold text-stone-300 uppercase tracking-widest text-sm">Total</span>
           <span className="relative text-3xl font-bold bg-gradient-to-r from-orange-400 to-amber-500 bg-clip-text text-transparent">{total.toLocaleString('fr-FR')} FCFA</span>
         </div>
 
         <button
           onClick={handleCommander}
           disabled={chargement}
-          className="w-full bg-gradient-to-r from-orange-500 to-amber-600 text-white font-semibold py-4 rounded-full hover:shadow-2xl hover:shadow-orange-500/50 hover:scale-[1.02] transition-all duration-300 disabled:opacity-50"
+          className="w-full bg-gradient-to-r from-orange-500 to-amber-600 text-white font-bold py-5 rounded-2xl hover:shadow-2xl hover:shadow-orange-500/50 hover:scale-[1.02] transition-all duration-300 disabled:opacity-50"
         >
           {chargement
             ? 'Traitement...'
@@ -250,7 +246,7 @@ export default function PanierPage() {
         </button>
 
         {modePaiement === 'mobile' && (
-          <p className="text-xs text-center text-stone-500 mt-3">
+          <p className="text-xs text-center text-stone-500 mt-4">
             Vous serez redirigé vers PayDunya pour finaliser le paiement
           </p>
         )}

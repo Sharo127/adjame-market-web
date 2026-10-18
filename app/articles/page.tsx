@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useMemo } from 'react';
 import { usePanier } from '../contexts/PanierContext';
+
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
 
 interface Article {
@@ -60,6 +61,7 @@ export default function ArticlesPage() {
 
   const articlesFiltres = useMemo(() => {
     let resultat = [...articles];
+
     if (recherche.trim()) {
       const q = recherche.toLowerCase().trim();
       resultat = resultat.filter((a) => a.nom.toLowerCase().includes(q));
@@ -76,6 +78,7 @@ export default function ArticlesPage() {
     if (tri === 'prix-asc') resultat.sort((a, b) => a.prix - b.prix);
     else if (tri === 'prix-desc') resultat.sort((a, b) => b.prix - a.prix);
     else if (tri === 'nom-asc') resultat.sort((a, b) => a.nom.localeCompare(b.nom));
+
     return resultat;
   }, [articles, recherche, boutiqueFiltre, prixMin, prixMax, tri]);
 
@@ -120,18 +123,24 @@ export default function ArticlesPage() {
 
   return (
     <main className="min-h-screen pt-28 pb-20">
+      {/* En-tête */}
       <section className="px-6 py-12">
         <div className="max-w-6xl mx-auto">
-          <span className="text-xs font-bold tracking-widest text-orange-400 uppercase">Catalogue</span>
+          <span className="text-xs font-bold tracking-widest text-orange-400 uppercase">
+            Catalogue
+          </span>
           <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-white mt-2 mb-3">
             Tous les articles
           </h1>
           <p className="text-stone-400">
-            {chargement ? 'Chargement...' : `${articlesFiltres.length} article(s) affiché(s) sur ${articles.length}`}
+            {chargement
+              ? 'Chargement...'
+              : `${articlesFiltres.length} article(s) affiché(s) sur ${articles.length}`}
           </p>
         </div>
       </section>
 
+      {/* Barre de recherche + filtres */}
       <section className="px-6 pb-8">
         <div className="max-w-6xl mx-auto">
           <div className="flex gap-3 mb-4">
@@ -144,12 +153,13 @@ export default function ArticlesPage() {
                 placeholder="Rechercher un article..."
                 value={recherche}
                 onChange={(e) => setRecherche(e.target.value)}
-                className="w-full bg-white/5 border border-white/10 rounded-full pl-12 pr-4 py-3.5 text-sm text-white placeholder-stone-500 focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500/50 transition"
+                className="w-full bg-white/5 border border-white/10 rounded-2xl pl-12 pr-4 py-3.5 text-sm text-white placeholder-stone-500 focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500/50 transition"
               />
             </div>
+
             <button
               onClick={() => setAfficherFiltres((v) => !v)}
-              className={`relative px-5 py-3.5 rounded-full border font-medium text-sm transition-all duration-300 flex items-center gap-2 ${
+              className={`relative px-5 py-3.5 rounded-2xl border font-medium text-sm transition-all duration-300 flex items-center gap-2 ${
                 afficherFiltres || nbFiltresActifs > 0
                   ? 'bg-orange-500/10 border-orange-500/50 text-orange-400'
                   : 'bg-white/5 border-white/10 text-stone-300 hover:bg-white/10'
@@ -168,11 +178,11 @@ export default function ArticlesPage() {
           </div>
 
           {afficherFiltres && (
-            <div className="bg-gradient-to-b from-white/5 to-white/[0.02] backdrop-blur-sm rounded-2xl border border-white/10 p-6 mb-4">
+            <div className="bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 p-6 mb-4">
               <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
                 <div>
                   <label className="block text-xs font-bold text-stone-400 uppercase tracking-wider mb-2">Boutique</label>
-                  <select value={boutiqueFiltre} onChange={(e) => setBoutiqueFiltre(e.target.value)} className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-orange-500/50">
+                  <select value={boutiqueFiltre} onChange={(e) => setBoutiqueFiltre(e.target.value)} className="w-full bg-black/50 border border-white/10 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-orange-500/50">
                     <option value="toutes" className="bg-[#0a0a0a]">Toutes les boutiques</option>
                     {boutiques.map((b) => (
                       <option key={b.id} value={String(b.id)} className="bg-[#0a0a0a]">{b.nom}</option>
@@ -181,15 +191,15 @@ export default function ArticlesPage() {
                 </div>
                 <div>
                   <label className="block text-xs font-bold text-stone-400 uppercase tracking-wider mb-2">Prix min (FCFA)</label>
-                  <input type="number" min="0" placeholder="0" value={prixMin} onChange={(e) => setPrixMin(e.target.value === '' ? '' : Number(e.target.value))} className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white placeholder-stone-500 focus:outline-none focus:ring-2 focus:ring-orange-500/50" />
+                  <input type="number" min="0" placeholder="0" value={prixMin} onChange={(e) => setPrixMin(e.target.value === '' ? '' : Number(e.target.value))} className="w-full bg-black/50 border border-white/10 rounded-xl px-3 py-2 text-sm text-white placeholder-stone-500 focus:outline-none focus:ring-2 focus:ring-orange-500/50" />
                 </div>
                 <div>
                   <label className="block text-xs font-bold text-stone-400 uppercase tracking-wider mb-2">Prix max (FCFA)</label>
-                  <input type="number" min="0" placeholder="Illimité" value={prixMax} onChange={(e) => setPrixMax(e.target.value === '' ? '' : Number(e.target.value))} className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white placeholder-stone-500 focus:outline-none focus:ring-2 focus:ring-orange-500/50" />
+                  <input type="number" min="0" placeholder="Illimité" value={prixMax} onChange={(e) => setPrixMax(e.target.value === '' ? '' : Number(e.target.value))} className="w-full bg-black/50 border border-white/10 rounded-xl px-3 py-2 text-sm text-white placeholder-stone-500 focus:outline-none focus:ring-2 focus:ring-orange-500/50" />
                 </div>
                 <div>
                   <label className="block text-xs font-bold text-stone-400 uppercase tracking-wider mb-2">Trier par</label>
-                  <select value={tri} onChange={(e) => setTri(e.target.value)} className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-orange-500/50">
+                  <select value={tri} onChange={(e) => setTri(e.target.value)} className="w-full bg-black/50 border border-white/10 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-orange-500/50">
                     <option value="recent" className="bg-[#0a0a0a]">Plus récents</option>
                     <option value="prix-asc" className="bg-[#0a0a0a]">Prix croissant</option>
                     <option value="prix-desc" className="bg-[#0a0a0a]">Prix décroissant</option>
@@ -199,7 +209,7 @@ export default function ArticlesPage() {
               </div>
               {nbFiltresActifs > 0 && (
                 <div className="flex justify-end pt-4 border-t border-white/5">
-                  <button onClick={reinitialiserFiltres} className="text-sm text-orange-400 hover:text-orange-300 font-medium transition-colors">✕ Réinitialiser tous les filtres</button>
+                  <button onClick={reinitialiserFiltres} className="text-sm text-orange-400 hover:text-orange-300 font-medium transition-colors">✕ Réinitialiser</button>
                 </div>
               )}
             </div>
@@ -207,14 +217,15 @@ export default function ArticlesPage() {
         </div>
       </section>
 
+      {/* Grille d'articles */}
       <section className="px-6 py-4">
         <div className="max-w-6xl mx-auto">
           {chargement ? (
-            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {[1, 2, 3, 4, 5, 6].map((i) => (
-                <div key={i} className="bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 overflow-hidden animate-pulse">
-                  <div className="h-48 bg-white/5"></div>
-                  <div className="p-5">
+                <div key={i} className="bg-white/5 rounded-3xl border border-white/10 overflow-hidden animate-pulse">
+                  <div className="h-56 bg-white/5"></div>
+                  <div className="p-6">
                     <div className="h-4 bg-white/5 rounded w-3/4 mb-2"></div>
                     <div className="h-4 bg-white/5 rounded w-1/2"></div>
                   </div>
@@ -226,31 +237,57 @@ export default function ArticlesPage() {
               <div className="text-6xl mb-4 opacity-60">🔍</div>
               <p className="text-stone-400 mb-2">Aucun article ne correspond à vos critères.</p>
               {nbFiltresActifs > 0 && (
-                <button onClick={reinitialiserFiltres} className="mt-4 text-sm text-orange-400 hover:text-orange-300 font-medium">Réinitialiser les filtres</button>
+                <button onClick={reinitialiserFiltres} className="mt-4 text-sm text-orange-400 hover:text-orange-300 font-medium">Réinitialiser</button>
               )}
             </div>
           ) : (
-            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {articlesFiltres.map((article) => (
-                <div key={article.id} className="group relative bg-gradient-to-b from-white/5 to-white/[0.02] backdrop-blur-sm rounded-2xl border border-white/10 overflow-hidden hover:border-orange-500/40 hover:shadow-2xl hover:shadow-orange-500/10 hover:-translate-y-1 transition-all duration-500 flex flex-col">
-                  <div className="relative h-48 overflow-hidden">
-                    <div className="absolute inset-0 bg-cover bg-center scale-105 group-hover:scale-110 transition-transform duration-700" style={{ backgroundImage: `url('${getImage(article)}')` }} />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-                    <span className="absolute top-3 left-3 text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/20 text-orange-300">
+                <div
+                  key={article.id}
+                  className="group relative bg-white/5 backdrop-blur-sm rounded-3xl border border-white/10 overflow-hidden hover:border-orange-500/40 hover:shadow-2xl hover:shadow-orange-500/10 hover:-translate-y-1 transition-all duration-500 flex flex-col"
+                >
+                  {/* Image */}
+                  <div className="relative h-56 overflow-hidden">
+                    <div
+                      className="absolute inset-0 bg-cover bg-center scale-105 group-hover:scale-110 transition-transform duration-1000"
+                      style={{ backgroundImage: `url('${getImage(article)}')` }}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
+                    
+                    {/* Badge boutique */}
+                    <span className="absolute top-4 left-4 text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full bg-black/60 backdrop-blur-md border border-white/20 text-orange-300">
                       {article.boutique_nom || `Boutique #${article.boutique}`}
                     </span>
+                    
+                    {/* Badge stock */}
                     {article.stock !== undefined && article.stock <= 3 && (
-                      <span className="absolute top-3 right-3 text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full bg-red-500/80 backdrop-blur-md text-white">Stock {article.stock}</span>
+                      <span className="absolute top-4 right-4 text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full bg-red-500/80 backdrop-blur-md text-white">
+                        Stock {article.stock}
+                      </span>
                     )}
                   </div>
-                  <div className="p-5 flex flex-col flex-1">
-                    <h2 className="text-lg font-semibold text-white mb-1 line-clamp-1">{article.nom}</h2>
-                    <p className="text-stone-400 text-sm line-clamp-2 mb-4">{article.description || 'Découvrez cet article du marché.'}</p>
-                    <div className="flex items-center justify-between mt-auto pt-4 border-t border-white/5">
-                      <span className="text-lg font-bold bg-gradient-to-r from-orange-400 to-amber-500 bg-clip-text text-transparent">
+
+                  {/* Contenu */}
+                  <div className="p-6 flex flex-col flex-1">
+                    <h2 className="text-xl font-bold text-white mb-2 line-clamp-1">{article.nom}</h2>
+                    <p className="text-stone-400 text-sm line-clamp-2 mb-6">
+                      {article.description || 'Découvrez cet article du marché.'}
+                    </p>
+
+                    <div className="flex items-center justify-between mt-auto pt-4 border-t border-white/10">
+                      <span className="text-xl font-bold bg-gradient-to-r from-orange-400 to-amber-500 bg-clip-text text-transparent">
                         {article.prix.toLocaleString('fr-FR')} FCFA
                       </span>
-                      <button onClick={() => handleAjouter(article)} disabled={ajoutes.has(article.id)} className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${ajoutes.has(article.id) ? 'bg-green-500/20 text-green-400 cursor-not-allowed' : 'bg-gradient-to-r from-orange-500 to-amber-600 text-white hover:shadow-lg hover:shadow-orange-500/50 hover:scale-105'}`}>
+                      <button
+                        onClick={() => handleAjouter(article)}
+                        disabled={ajoutes.has(article.id)}
+                        className={`px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 ${
+                          ajoutes.has(article.id)
+                            ? 'bg-green-500/20 text-green-400 cursor-not-allowed'
+                            : 'bg-gradient-to-r from-orange-500 to-amber-600 text-white hover:shadow-lg hover:shadow-orange-500/50 hover:scale-105'
+                        }`}
+                      >
                         {ajoutes.has(article.id) ? '✓ Ajouté' : 'Ajouter'}
                       </button>
                     </div>
