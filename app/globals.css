@@ -8,7 +8,7 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-jakarta);
+  --font-sans: var(--font-manrope); /* <-- CHANGÉ : Manrope au lieu de Jakarta */
 
   --animate-menu-in: menuIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   @keyframes menuIn {
@@ -31,6 +31,7 @@ body {
   min-height: 100vh;
 }
 
+/* ============ HALOS LUMINEUX ============ */
 .blob-container {
   position: fixed;
   inset: 0;
@@ -88,4 +89,47 @@ body {
   background-size: 80px 80px;
   mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
   -webkit-mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
+}
+
+/* ============ UTILITAIRES MODERNES (à ajouter) ============ */
+
+/* Effet de verre dépoli */
+.glass {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Texte en dégradé orange */
+.text-gradient {
+  background: linear-gradient(to right, #fb923c, #f59e0b);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Effet de bordure lumineuse */
+.border-glow {
+  position: relative;
+}
+.border-glow::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(to bottom right, rgba(249, 115, 22, 0.5), transparent);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* Animation lente pour les éléments flottants */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+.animate-float {
+  animation: float 3s ease-in-out infinite;
 }

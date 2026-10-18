@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Plus_Jakarta_Sans } from "next/font/google";
+import { Manrope } from "next/font/google";
 import "./globals.css";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
@@ -7,9 +7,10 @@ import AnimatedBackground from "./components/AnimatedBackground";
 import { PanierProvider } from "./contexts/PanierContext";
 import { Analytics } from "@vercel/analytics/next";
 
-const jakarta = Plus_Jakarta_Sans({
+const manrope = Manrope({
   subsets: ["latin"],
-  variable: "--font-jakarta",
+  variable: "--font-manrope",
+  weight: ["300", "400", "500", "600", "700", "800"],
 });
 
 export const metadata: Metadata = {
@@ -24,7 +25,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="fr">
-      <body className={`${jakarta.variable} font-sans antialiased text-stone-100`}>
+      <body className={`${manrope.variable} font-sans antialiased text-stone-100`}>
         {/* Halos lumineux */}
         <div className="blob-container" aria-hidden="true">
           <div className="blob blob-1" />
