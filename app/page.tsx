@@ -6,12 +6,14 @@ import TypewriterText from './components/TypewriterText';
 import CountUp from './components/CountUp';
 import BoutiqueCard from './components/BoutiqueCard';
 import HeroCarousel from './components/HeroCarousel';
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
+
+const API_URL: string = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
 
 interface Boutique {
   id: number;
   nom: string;
   description: string;
+  image: string | null;  // <-- AJOUTÉ ICI
   articles?: any[];
 }
 
@@ -65,22 +67,23 @@ export default function HomePage() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               href="/articles"
-              className="group px-8 py-4 rounded-full bg-gradient-to-r from-orange-500 to-amber-600 text-white font-semibold shadow-2xl shadow-orange-500/40 hover:shadow-orange-500/60 hover:scale-105 transition-all duration-300 flex items-center justify-center gap-2"
+              className="group relative px-8 py-4 rounded-2xl bg-gradient-to-r from-orange-500 to-amber-600 text-white font-semibold shadow-2xl shadow-orange-500/30 hover:shadow-orange-500/50 hover:-translate-y-1 transition-all duration-300 flex items-center justify-center gap-2 overflow-hidden"
             >
-              Explorer les articles
-              <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
+              <span className="relative">Explorer les articles</span>
+              <svg className="relative w-5 h-5 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
               </svg>
             </Link>
             <Link
               href="/inscription"
-              className="px-8 py-4 rounded-full bg-white/5 backdrop-blur-md border border-white/20 text-white font-semibold hover:bg-white/10 hover:scale-105 transition-all duration-300 flex items-center justify-center"
+              className="px-8 py-4 rounded-2xl bg-white/5 backdrop-blur-md border border-white/20 text-white font-semibold hover:bg-white/10 hover:scale-105 transition-all duration-300 flex items-center justify-center"
             >
               Créer un compte
             </Link>
           </div>
 
-          <div className="mt-16 inline-flex flex-wrap justify-center gap-x-12 gap-y-6 px-8 py-6 rounded-2xl bg-white/5 backdrop-blur-md border border-white/10">
+          <div className="mt-16 inline-flex flex-wrap justify-center gap-x-12 gap-y-6 px-8 py-6 rounded-3xl bg-white/5 backdrop-blur-md border border-white/10">
             <div>
               <div className="text-3xl font-bold bg-gradient-to-r from-orange-400 to-amber-500 bg-clip-text text-transparent">
                 <CountUp end={boutiques.length} duration={1500} />
@@ -133,7 +136,7 @@ export default function HomePage() {
               {[1, 2, 3].map((i) => (
                 <div
                   key={i}
-                  className="bg-white/5 rounded-3xl border border-white/10 h-72 animate-pulse"
+                  className="bg-white/5 rounded-3xl border border-white/10 h-80 animate-pulse"
                 />
               ))}
             </div>
