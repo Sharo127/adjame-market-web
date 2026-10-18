@@ -7,10 +7,11 @@ interface Boutique {
   id: number;
   nom: string;
   description: string;
+  image: string | null;  // <-- AJOUTÉ
   articles?: any[];
 }
 
-// Base de données d'images par mots-clés (recherche dans le nom + description)
+// Base de données d'images par mots-clés
 const IMAGES_PAR_MOT_CLE: Record<string, string[]> = {
   wax: [
     'https://images.unsplash.com/photo-1604329760661-e71dc83f8f26?q=80&w=1200',
@@ -75,26 +76,27 @@ const IMAGES_PAR_MOT_CLE: Record<string, string[]> = {
   ],
 };
 
-// Images par défaut (si aucun mot-clé n'est trouvé)
+// Images par défaut
 const IMAGES_DEFAUT = [
   'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?q=80&w=1200',
   'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?q=80&w=1200',
   'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?q=80&w=1200',
 ];
 
-// Fonction pour trouver la bonne image selon le nom/description
+// Fonction pour trouver la bonne image
 function trouverImage(boutique: Boutique): string {
-  const texte = `${boutique.nom} ${boutique.description}`.toLowerCase();
+  // 1. Si la boutique a une image uploadée, l'utiliser
+  if (boutique.image) return boutique.image;
 
-  // Chercher un mot-clé correspondant
+  // 2. Sinon, chercher un mot-clé dans le nom/description
+  const texte = `${boutique.nom} ${boutique.description}`.toLowerCase();
   for (const [motCle, images] of Object.entries(IMAGES_PAR_MOT_CLE)) {
     if (texte.includes(motCle)) {
-      // Utiliser l'index de la boutique pour varier l'image
       return images[boutique.id % images.length];
     }
   }
 
-  // Sinon, image par défaut
+  // 3. Sinon, image par défaut
   return IMAGES_DEFAUT[boutique.id % IMAGES_DEFAUT.length];
 }
 
@@ -138,34 +140,30 @@ export default function BoutiqueCard({ boutique }: { boutique: Boutique }) {
         {/* Overlay dégradé sombre en bas */}
         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent" />
 
-        {/* Overlay léger sur toute l'image pour lisibilité */}
+        {/* Overlay léger sur toute l'image */}
         <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors duration-500" />
 
-        {/* Badge "Nouveau" ou "Vedette" en haut à droite */}
+        {/* Badge "Vedette" */}
         <div className="absolute top-4 right-4 px-3 py-1 rounded-full bg-orange-500/90 backdrop-blur-md text-white text-[10px] font-bold uppercase tracking-widest shadow-lg shadow-orange-500/50">
           Vedette
         </div>
 
-        {/* Contenu en bas de l'image */}
+        {/* Contenu en bas */}
         <div className="absolute bottom-0 left-0 right-0 p-6">
-          {/* Avatar du vendeur */}
           <div className="flex items-end gap-3 mb-3">
             <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-orange-500 to-amber-600 flex items-center justify-center text-white font-bold text-xl shadow-2xl shadow-orange-500/50 border-2 border-white/20 shrink-0">
               {boutique.nom.charAt(0).toUpperCase()}
             </div>
           </div>
 
-          {/* Nom de la boutique */}
           <h3 className="text-2xl font-bold text-white tracking-tight mb-1 drop-shadow-lg">
             {boutique.nom}
           </h3>
 
-          {/* Description */}
           <p className="text-white/70 text-sm line-clamp-2 mb-3 drop-shadow">
             {boutique.description || 'Découvrez cette boutique du marché d\'Adjamé.'}
           </p>
 
-          {/* Footer de la carte */}
           <div className="flex items-center justify-between pt-3 border-t border-white/10">
             <div className="flex items-center gap-2 text-white/80 text-xs font-medium">
               <svg className="w-4 h-4 text-orange-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">

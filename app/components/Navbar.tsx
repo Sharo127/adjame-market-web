@@ -44,7 +44,6 @@ export default function Navbar() {
       .finally(() => setChargement(false));
   }, []);
 
-  // Ferme le menu mobile quand on change de page
   useEffect(() => {
     setMenuMobileOuvert(false);
   }, [pathname]);
@@ -82,17 +81,17 @@ export default function Navbar() {
       <nav
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
           scrolled
-            ? 'bg-black/70 backdrop-blur-2xl border-b border-orange-500/10 shadow-[0_4px_40px_rgba(249,115,22,0.08)] py-3'
-            : 'bg-black/40 backdrop-blur-lg border-b border-white/5 py-4'
+            ? 'bg-black/70 backdrop-blur-2xl border-b border-white/10 shadow-[0_4px_30px_rgba(249,115,22,0.15)] py-2'
+            : 'bg-transparent py-4'
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 group">
-            <span className="relative w-9 h-9 rounded-xl bg-gradient-to-br from-orange-500 to-amber-600 flex items-center justify-center text-white font-bold text-sm shadow-lg shadow-orange-500/50 transition-all duration-500 ease-out group-hover:rotate-12 group-hover:scale-110">
+            <span className="relative w-10 h-10 rounded-2xl bg-gradient-to-br from-orange-500 to-amber-600 flex items-center justify-center text-white font-bold text-lg shadow-lg shadow-orange-500/30 transition-all duration-500 ease-out group-hover:rotate-12 group-hover:scale-110">
               A
             </span>
-            <span className="text-lg font-bold tracking-tight text-white">
+            <span className="text-xl font-bold tracking-tight text-white">
               Adjame Market
             </span>
           </Link>
@@ -211,15 +210,12 @@ export default function Navbar() {
       {/* Menu mobile plein écran */}
       {menuMobileOuvert && (
         <>
-          {/* Overlay */}
           <div
             className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] md:hidden"
             onClick={() => setMenuMobileOuvert(false)}
           />
 
-          {/* Panneau */}
           <div className="fixed top-0 right-0 bottom-0 w-[85%] max-w-sm bg-[#0a0a0a] border-l border-white/10 z-[70] md:hidden overflow-y-auto">
-            {/* En-tête du panneau */}
             <div className="flex items-center justify-between p-5 border-b border-white/5">
               <Link href="/" className="flex items-center gap-2" onClick={() => setMenuMobileOuvert(false)}>
                 <span className="w-9 h-9 rounded-xl bg-gradient-to-br from-orange-500 to-amber-600 flex items-center justify-center text-white font-bold text-sm shadow-lg shadow-orange-500/50">
@@ -238,7 +234,6 @@ export default function Navbar() {
               </button>
             </div>
 
-            {/* Utilisateur connecté */}
             {!chargement && utilisateur && (
               <div className="px-5 py-4 border-b border-white/5">
                 <div className="flex items-center gap-3">
@@ -253,7 +248,6 @@ export default function Navbar() {
               </div>
             )}
 
-            {/* Liens principaux */}
             <div className="p-5 space-y-1">
               <p className="text-[10px] font-bold text-stone-500 uppercase tracking-widest mb-3">Navigation</p>
               <Link
@@ -301,7 +295,6 @@ export default function Navbar() {
               </Link>
             </div>
 
-            {/* Liens selon le rôle */}
             {!chargement && utilisateur && (
               <div className="p-5 border-t border-white/5 space-y-1">
                 <p className="text-[10px] font-bold text-stone-500 uppercase tracking-widest mb-3">Mon espace</p>
@@ -344,7 +337,6 @@ export default function Navbar() {
               </div>
             )}
 
-            {/* Bouton connexion / inscription / déconnexion */}
             <div className="p-5 border-t border-white/5">
               {!chargement && utilisateur ? (
                 <button
