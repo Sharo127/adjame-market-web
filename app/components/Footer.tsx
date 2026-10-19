@@ -1,26 +1,30 @@
 'use client';
 
 import Link from 'next/link';
+import Logo from './Logo'; // 👈 Import du logo animé
 
 export default function Footer() {
   return (
     <footer className="relative mt-20 border-t border-white/5 bg-black/40 backdrop-blur-xl">
+      {/* Ligne lumineuse en haut */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-px bg-gradient-to-r from-transparent via-orange-500/50 to-transparent" />
 
-      <div className="max-w-7xl mx-auto px-6 py-16">
+      <div className="max-w-6xl mx-auto px-6 py-16">
         <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-10">
+          
+          {/* Colonne 1 : Logo & Description */}
           <div className="sm:col-span-2 md:col-span-1">
-            <Link href="/" className="flex items-center gap-2.5 group mb-4">
-              <span className="w-9 h-9 rounded-xl bg-gradient-to-br from-orange-500 to-amber-600 flex items-center justify-center text-white font-bold text-sm shadow-lg shadow-orange-500/50">
-                A
-              </span>
-              <span className="text-lg font-bold text-white">Adjamé Market</span>
+            <Link href="/" className="flex items-center gap-3 group mb-4">
+              {/* ✅ Remplacement du <span>A</span> par le Logo animé */}
+              <Logo className="w-10 h-10" />
+              <span className="text-xl font-bold text-white tracking-tight">Adjame Market</span>
             </Link>
             <p className="text-stone-400 text-sm leading-relaxed">
               La marketplace du marché d'Adjamé. Achetez, vendez et faites-vous livrer en toute simplicité.
             </p>
           </div>
 
+          {/* Colonne 2 : Navigation */}
           <div>
             <h3 className="text-white font-semibold mb-4 text-sm uppercase tracking-widest">Navigation</h3>
             <ul className="space-y-2.5">
@@ -31,6 +35,7 @@ export default function Footer() {
             </ul>
           </div>
 
+          {/* Colonne 3 : À propos */}
           <div>
             <h3 className="text-white font-semibold mb-4 text-sm uppercase tracking-widest">À propos</h3>
             <ul className="space-y-2.5">
@@ -41,6 +46,7 @@ export default function Footer() {
             </ul>
           </div>
 
+          {/* Colonne 4 : Réseaux sociaux & Contact */}
           <div>
             <h3 className="text-white font-semibold mb-4 text-sm uppercase tracking-widest">Suivez-nous</h3>
             <div className="flex gap-3">
@@ -72,6 +78,7 @@ export default function Footer() {
           </div>
         </div>
 
+        {/* Bas du footer */}
         <div className="mt-12 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-stone-500 text-xs">
             © {new Date().getFullYear()} Adjamé Market. Tous droits réservés.

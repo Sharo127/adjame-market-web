@@ -11,7 +11,7 @@ const IMAGES = [
   '/images/hero-6.jpg',
 ];
 
-const DUREE = 5000; // 5 secondes par image
+const DUREE = 6000; // 6 secondes pour laisser le temps de voir le zoom
 
 export default function HeroCarousel() {
   const [imageActive, setImageActive] = useState(0);
@@ -25,38 +25,69 @@ export default function HeroCarousel() {
   }, []);
 
   return (
-    <div className="absolute inset-0 overflow-hidden">
-      {/* Images en fond avec transition en fondu */}
-      {IMAGES.map((img, index) => (
-        <div
-          key={img}
-          className="absolute inset-0 bg-cover bg-center transition-opacity duration-1000 ease-in-out"
-          style={{
-            backgroundImage: `url('${img}')`,
-            opacity: index === imageActive ? 1 : 0,
-            transform: 'scale(1.05)',
-          }}
-        />
-      ))}
+    <div className="absolute inset-0 overflow-hidden bg-black">
+      {/* Images en fond avec transition en fondu et effet Ken Burns */}
+      {IMAGES.map((img, index) => {
+        const estActive = index === imageActive;
+        
+        return (
+          <div
+            key={img}
+            className={`absolute inset-0 bg-cover bg-center transition-all duration-[2000ms] ease-out ${
+              estActive ? 'opacity-100 scale-110' : 'opacity-0 scale-100'
+            }`}
+            style={{
+              backgroundImage: `url('${img}')`,
+              // On ajoute une transition spécifique pour le zoom
+              transitionProperty: 'opacity, transform',
+              transitionDuration: estActive ? '6000ms, 6000ms' : '1500ms, 1500ms',
+              // Si l'image est active, on zoome doucement
+              transform: estActive ? 'scale(1.15)' : 'scale(1)',
+            }}
+          />
+        );
+      })}
 
-      {/* Overlay sombre pour la lisibilité */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/70 to-[#0a0a0a]" />
+      {/* Overlay sombre avec un léger dégradé radial pour concentrer la lumière au centre */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/60 to-[#0a0a0a]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-transparent via-black/20 to-black/80" />
 
-      {/* Points indicateurs en bas */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex gap-2">
+      {/* Points indicateurs en bas (améliorés) */}
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex gap-3">
         {IMAGES.map((_, index) => (
           <button
             key={index}
             onClick={() => setImageActive(index)}
             aria-label={`Image ${index + 1}`}
-            className={`transition-all duration-500 rounded-full ${
-              index === imageActive
-                ? 'w-8 h-2 bg-orange-500 shadow-lg shadow-orange-500/50'
-                : 'w-2 h-2 bg-white/40 hover:bg-white/70'
+            className={`group relative transition-all duration-500 rounded-full overflow-hidden ${
+              index === imageActive ? 'w-10 h-2' : 'w-2 h-2 hover:w-4'
             }`}
-          />
+          >
+            {/* Fond de base */}
+            <span className={`absolute inset-0 rounded-full ${
+              index === imageActive ? 'bg-orange-500' : 'bg-white/30 group-hover:bg-white/60'
+            }`} />
+            
+            {/* Barre de progression (uniquement sur l'image active) */}
+            {index === imageActive && (
+              <span className="absolute inset-0 bg-white/30 rounded-full overflow-hidden">
+                <span 
+                  className="block h-full bg-orange-300 w-full origin-left animate-[progress_6s_linear_forwards]"
+                  style={{ animation: `progress ${DUREE}ms linear forwards` }}
+                />
+              </span>
+            )}
+          </button>
         ))}
       </div>
+
+      {/* Injection de l'animation CSS pour la barre de progression */}
+      <style jsx>{`
+        @keyframes progress {
+          from { transform: scaleX(0); }
+          to { transform: scaleX(1); }
+        }
+      `}</style>
     </div>
   );
 }

@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { usePanier } from '../contexts/PanierContext';
+import Logo from './Logo';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
 
@@ -86,12 +87,10 @@ export default function Navbar() {
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between">
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 group">
-            <span className="relative w-10 h-10 rounded-2xl bg-gradient-to-br from-orange-500 to-amber-600 flex items-center justify-center text-white font-bold text-lg shadow-lg shadow-orange-500/30 transition-all duration-500 ease-out group-hover:rotate-12 group-hover:scale-110">
-              A
-            </span>
-            <span className="text-xl font-bold tracking-tight text-white">
+          {/* ✅ Logo desktop agrandi (w-14 h-14) */}
+          <Link href="/" className="flex items-center gap-3 group">
+            <Logo className="w-14 h-14" />
+            <span className="text-2xl font-bold tracking-tight text-white">
               Adjame Market
             </span>
           </Link>
@@ -217,11 +216,10 @@ export default function Navbar() {
 
           <div className="fixed top-0 right-0 bottom-0 w-[85%] max-w-sm bg-[#0a0a0a] border-l border-white/10 z-[70] md:hidden overflow-y-auto">
             <div className="flex items-center justify-between p-5 border-b border-white/5">
-              <Link href="/" className="flex items-center gap-2" onClick={() => setMenuMobileOuvert(false)}>
-                <span className="w-9 h-9 rounded-xl bg-gradient-to-br from-orange-500 to-amber-600 flex items-center justify-center text-white font-bold text-sm shadow-lg shadow-orange-500/50">
-                  A
-                </span>
-                <span className="text-lg font-bold text-white">Adjame Market</span>
+              {/* ✅ Logo mobile agrandi (w-12 h-12) */}
+              <Link href="/" className="flex items-center gap-3" onClick={() => setMenuMobileOuvert(false)}>
+                <Logo className="w-12 h-12" />
+                <span className="text-xl font-bold text-white">Adjame Market</span>
               </Link>
               <button
                 onClick={() => setMenuMobileOuvert(false)}
