@@ -7,7 +7,7 @@ import TypewriterText from './components/TypewriterText';
 import CountUp from './components/CountUp';
 import BoutiqueCard from './components/BoutiqueCard';
 import HeroCarousel from './components/HeroCarousel';
-import Footer from './components/Footer';
+// ❌ J'ai supprimé l'import de Footer
 
 const API_URL: string = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
 
@@ -19,7 +19,6 @@ interface Boutique {
   articles?: any[];
 }
 
-// Variantes d'animation pour les sections
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
   visible: (i: number) => ({
@@ -309,8 +308,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ============ FOOTER ============ */}
-      <Footer />
+      {/* ❌ PAS de <Footer /> ici */}
     </main>
   );
 }
