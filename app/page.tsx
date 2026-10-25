@@ -7,9 +7,9 @@ import TypewriterText from './components/TypewriterText';
 import CountUp from './components/CountUp';
 import BoutiqueCard from './components/BoutiqueCard';
 import HeroCarousel from './components/HeroCarousel';
-// ❌ J'ai supprimé l'import de Footer
 
-const API_URL: string = process.env.NEXT_PUBLIC_API_URL_V2 || 'http://127.0.0.1:8000';
+// 🔴 TEST : URL écrite en dur pour contourner le problème de variable d'environnement
+const API_URL: string = 'https://adjame-market-api-production.up.railway.app';
 
 interface Boutique {
   id: number;
@@ -307,8 +307,6 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-
-      {/* ❌ PAS de <Footer /> ici */}
     </main>
   );
 }
