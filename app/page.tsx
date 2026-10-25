@@ -9,7 +9,7 @@ import BoutiqueCard from './components/BoutiqueCard';
 import HeroCarousel from './components/HeroCarousel';
 // ❌ J'ai supprimé l'import de Footer
 
-const API_URL: string = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
+const API_URL: string = process.env.NEXT_PUBLIC_API_URL_V2 || 'http://127.0.0.1:8000';
 
 interface Boutique {
   id: number;
